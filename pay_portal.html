@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>安全支付導向 - WONDER WANDER</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body { font-family: sans-serif; background-color: #F5F1ED; color: #7E6B5A; }
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
 
+  <div id="loadingUI" class="text-center">
+    <div class="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+    <p class="font-bold text-sm tracking-widest">正在準備安全支付環境...</p>
+  </div>
+
+  <div id="readyUI" class="hidden bg-white p-8 rounded-[2rem] shadow-xl max-w-sm w-full text-center fade-in">
+    <div class="w-20 h-20 bg-[#F5F1ED] rounded-full flex items-center justify-center mx-auto mb-6 text-[#C5A059] text-3xl">
+      <i class="fas fa-shield-alt"></i>
+    </div>
+    <h2 class="text-xl font-bold mb-2 tracking-wide">安全支付導向</h2>
+    <p class="text-xs opacity-70 mb-8 leading-relaxed">您的預約席位已成功保留鎖位排隊中。<br>請點擊下方按鈕前往綠界安全金流完成付款。</p>
+        
+    <div id="formContainer" style="display:none;"></div>
+        
+    <button onclick="submitToECPay()" class="w-full bg-[#7E6B5A] hover:bg-[#C5A059] text-white font-bold py-4 rounded-xl shadow-lg transition-all tracking-widest flex items-center justify-center gap-2 text-sm">
+      確認前往支付 <i class="fas fa-external-link-alt text-xs"></i>
+    </button>
+  </div>
+
+  <script>
+    // 🚨 雅翎，請把下面這行引號內，精準換成妳「GAS 後端 Main.gs 部署出來的正式網路應用程式網址(.exec結尾)」
+    const GAS_BACKEND_API = "https://script.google.com/macros/s/AKfycbwIGY8L774iM-U50uniLROYu_2I-T-osoV6xOYVk99CaQZt6kMRJmgnBhWhxvS35A5r/exec";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+    
+    window.onload = function() {
+      if (!orderId) { 
+        alert('缺少訂單編號，請重新操作。'); 
+        return; 
+      }
+            
+      // 🚀 門戶核心：透過 fetch API 跨界跟 GAS 後端要綠界表單
+      fetch(`${GAS_BACKEND_API}?action=getPaymentForm&orderId=${orderId}`)
+        .then(response => response.json())
+        .then(res => {
+          if (res.success && res.html) {
+            document.getElementById('formContainer').innerHTML = res.html;
+            document.getElementById('loadingUI').classList.add('hidden');
+            document.getElementById('readyUI').classList.remove('hidden');
+          } else {
+            alert('金流資料加載失敗：' + (res.message || '未知錯誤'));
+          }
+        })
+        .catch(err => {
+          alert('連線至伺服器逾時，請確認後端 API 狀態。');
+          console.error(err);
+        });
+    };
+
+    function submitToECPay() {
+      const form = document.getElementById('ecpayForm');
+      if (form) {
+        form.submit();
+      } else {
+        alert('付款表單尚未準備就緒，請稍候。');
+      }
+    }
+  </script>
+</body>
+</html>
