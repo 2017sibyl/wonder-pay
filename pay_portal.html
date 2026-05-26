@@ -25,7 +25,7 @@
       <i class="fas fa-shield-alt"></i>
     </div>
     <h2 class="text-xl font-bold mb-2 tracking-wide">安全支付導向</h2>
-    <p class="text-xs opacity-70 mb-8 leading-relaxed">您的預約席位已成功保留鎖位排隊中。<br>請點擊下方按鈕前往綠界安全金流完成付款。</p>
+    <p class="text-xs opacity-70 mb-8 leading-relaxed">您的預約席位已成功暫時鎖位排隊中。<br>請點擊下方按鈕前往綠界安全金流完成付款。</p>
         
     <div id="formContainer" style="display:none;"></div>
         
@@ -35,8 +35,8 @@
   </div>
 
   <script>
-    <script>
-    const GAS_BACKEND_API = "https://script.google.com/macros/s/妳最新正式部署的ID/exec";
+    // 🚨 請在下方引號中，精準換成妳「最新正式部署出來」的 .exec 後端網址
+    const GAS_BACKEND_API = "https://script.google.com/macros/s/AKfycbz_XXXXXXXXXXXX/exec";
 
     const urlParams = new URLSearchParams(window.location.search);
     const orderId = urlParams.get('orderId');
@@ -47,7 +47,7 @@
         return; 
       }
             
-      // 🚀 核心：拿著 orderId，透過網址 fetch 跨界向後端要綠界表單
+      // 🚀 透過獨立網域 fetch 跨界安全通訊，向後端索取綠界表單 HTML
       fetch(`${GAS_BACKEND_API}?action=getPaymentForm&orderId=${orderId.trim()}`)
         .then(response => response.json())
         .then(res => {
@@ -60,7 +60,8 @@
           }
         })
         .catch(err => {
-          alert('連線至 Google 伺服器超時或 API 網址填錯，詳情：' + err.toString());
+          alert('連線至 Google 伺服器超時，請確認後端 API 部署狀態。');
+          console.error(err);
         });
     };
 
