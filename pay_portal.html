@@ -3,87 +3,176 @@
 <head>
   <base target="_top">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>安全支付導向 - WONDER WANDER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>專屬安全補付通道 - WONDER WANDER</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    body { font-family: sans-serif; background-color: #F5F1ED; color: #7E6B5A; }
+    body { font-family: 'Noto Sans TC', sans-serif; background-color: #F5F1ED; color: #7E6B5A; }
     .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: '#D9C5B2', dark: '#7E6B5A', accent: '#C5A059', surface: '#FFFFFF', inputbg: '#FAF9F8' } } } }
+  </script>
 </head>
-<body class="flex items-center justify-center min-h-screen p-6">
+<body class="flex flex-col items-center justify-center min-h-screen p-4 antialiased">
 
-  <div id="loadingUI" class="text-center">
-    <div class="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-    <p class="font-bold text-sm tracking-widest">正在準備安全支付環境...</p>
+  <div class="text-center mb-6 fade-in">
+    <img src="https://i.postimg.cc/ZYvTKGkY/Wonder-SPA-LOGO.png" alt="WONDER WANDER" class="h-24 w-auto object-contain mx-auto opacity-90">
+    <h1 class="text-xs font-bold tracking-[0.3em] text-dark/70 mt-3">補付專用金流通道</h1>
+    <div class="h-px w-8 bg-accent mx-auto mt-2 opacity-40"></div>
   </div>
 
-  <div id="readyUI" class="hidden bg-white p-8 rounded-[2rem] shadow-xl max-w-sm w-full text-center fade-in">
-    <div class="w-20 h-20 bg-[#F5F1ED] rounded-full flex items-center justify-center mx-auto mb-6 text-[#C5A059] text-3xl">
-      <i class="fas fa-shield-alt"></i>
+  <div class="bg-surface w-full max-w-sm rounded-[2rem] p-6 shadow-xl border border-secondary/20 fade-in relative overflow-hidden">
+    
+    <div class="bg-[#F5EBE1] p-4 rounded-2xl border border-accent/20 text-center mb-5">
+      <p class="text-[11px] text-dark/80 font-bold leading-relaxed">
+        <i class="fas fa-exclamation-circle text-accent mr-1"></i> 若您剛剛在預約畫面「前往支付」卡住轉圈圈，請在此處填寫資訊，即可直接安全跳轉至綠界完成刷卡付款。
+      </p>
     </div>
-    <h2 class="text-xl font-bold mb-2 tracking-wide">安全支付導向</h2>
-    <p class="text-xs opacity-70 mb-8 leading-relaxed">您的預約席位已成功暫時鎖位排隊中。<br>請點擊下方按鈕前往綠界安全金流完成付款。</p>
-        
-    <div id="formContainer" style="display:none;"></div>
-        
-    <button onclick="submitToECPay()" class="w-full bg-[#7E6B5A] hover:bg-[#C5A059] text-white font-bold py-4 rounded-xl shadow-lg transition-all tracking-widest flex items-center justify-center gap-2 text-sm">
-      確認前往支付 <i class="fas fa-external-link-alt text-xs"></i>
-    </button>
+
+    <div class="space-y-4">
+      
+      <div>
+        <label class="block text-[10px] font-bold text-dark/60 mb-1 pl-1"> 1. 輸入預約的手機號碼 (對帳必填) </label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-dark/40 text-xs"><i class="fas fa-phone-alt"></i></span>
+          <input type="tel" id="guestPhone" placeholder="請輸入手機號碼" class="w-full bg-inputbg border border-secondary/30 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-accent font-medium">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-[10px] font-bold text-dark/60 mb-1 pl-1"> 2. 選擇您要付款的服務項目 </label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-dark/40 text-xs"><i class="fas fa-spa"></i></span>
+          <select id="serviceSelect" class="w-full bg-inputbg border border-secondary/30 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-accent appearance-none font-medium text-dark/80">
+            <option value="" disabled selected>🔍 正在與雲端價目表同步...</option>
+          </select>
+          <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-dark/40 text-xs"><i class="fas fa-chevron-down"></i></span>
+        </div>
+      </div>
+
+      <div class="w-full h-[1px] bg-secondary/20 my-4"></div>
+
+      <div id="ecpayFormSlot" style="display: none;"></div>
+
+      <button type="button" onclick="launchECPay()" id="payBtn" class="w-full bg-dark hover:bg-accent text-white font-bold py-4 rounded-xl mt-2 text-xs tracking-[0.2em] transition-all shadow-md flex items-center justify-center gap-2 group">
+        <i class="fas fa-shield-alt text-accent"></i> 建立安全金流連線
+      </button>
+
+    </div>
   </div>
+
+  <p class="text-[9px] text-secondary/70 font-bold tracking-widest mt-6">Secured by ECPay & Sibyl數位管家</p>
 
   <script>
-    // 🚀【精準綁定】這裏已經為妳牢牢綁定最新的 GAS-B 老闆後台正式 .exec 網址
-    const GAS_BACKEND_API = "https://script.google.com/macros/s/AKfycbzJUWT6hOXHuZx5RRwCrY8FdzWX7jHt3Hc9SQFoR51kNNqc9Nz30jAhxpBWkYMqpdQ/exec";
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('orderId');
+    // 👑 綁定妳的後台大腦專案 (GAS-B) 的正式發布網址 (.exec)
+    const BACKEND_API = "https://script.google.com/macros/s/AKfycbwIGY8L774iM-U50uniLROYu_2I-T-osoV6xOYVk99CaQZt6kMRJmgnBhWhxvS35A5r/exec";
     
+    // 從大腦後台撈取「Service_服務價目表」最新上架資訊
     window.onload = function() {
-      if (!orderId) { 
-        alert('缺少訂單編號，請重新從預約前台操作。'); 
-        return; 
-      }
-            
-      // 🚀【精準血管修正】改用標準 CORS POST 模式跨網域打包發送，讓 GAS-B doPost 完美讀取
-      fetch(GAS_BACKEND_API, {
+      fetch(BACKEND_API, {
         method: "POST",
         mode: "cors",
-        contentType: "application/json",
-        body: JSON.stringify({
-          action: "getPaymentForm",
-          orderId: orderId.trim()
-        })
+        body: JSON.stringify({ action: "getPaymentForm", orderId: "FETCH_SERVICES_LIST" }) 
       })
-      .then(response => response.json())
-      .then(res => {
-        if (res.success && res.html) {
-          document.getElementById('formContainer').innerHTML = res.html;
-          document.getElementById('loadingUI').classList.add('hidden');
-          document.getElementById('readyUI').classList.remove('hidden');
-          
-          // 💡 自動化極致：如果希望客人一轉進來 GitHub「完全不用按按鈕，0秒自動轉去綠界」，可以把下面這行的雙斜線拿掉：
-          // submitToECPay();
-        } else {
-          alert('金流資料加載失敗：' + (res.message || '未知錯誤'));
+      .then(res => res.json())
+      .then(data => {
+        const select = document.getElementById('serviceSelect');
+        select.innerHTML = '<option value="" disabled selected>-- 請選擇服務項目 --</option>';
+        
+        // 💡 預設的保底選單，萬一連線超時也有按鈕可以按
+        let services = [
+          { name: "肌肉帥哥專屬精油舒壓摩 - 120分鐘", price: 2900 },
+          { name: "肌肉帥哥專屬精油舒壓摩 - 90分鐘", price: 2300 }
+        ];
+        
+        if (data && data.success && data.list && data.list.length > 0) {
+          services = data.list;
         }
+        
+        services.forEach(item => {
+          let opt = document.createElement('option');
+          opt.value = item.name + "|" + item.price;
+          opt.innerText = `${item.name} (NT$ ${item.price.toLocaleString()})`;
+          select.appendChild(opt);
+        });
       })
       .catch(err => {
-        alert('連線至 Google 伺服器超時，請確認後端 API 部署狀態（須為所有人可存取）。');
-        console.error(err);
+        // 發生任何異常自動切換為保底固定選單，確保營業絕對不中斷
+        const select = document.getElementById('serviceSelect');
+        select.innerHTML = `
+          <option value="" disabled selected>-- 請選擇服務項目 --</option>
+          <option value="肌肉帥哥專屬精油舒壓摩 - 120分鐘|2900">肌肉帥哥專屬精油舒壓摩 - 120分鐘 (NT$ 2,900)</option>
+          <option value="肌肉帥哥專專屬精油舒壓摩 - 90分鐘|2300">肌肉帥哥專屬精油舒壓摩 - 90分鐘 (NT$ 2,300)</option>
+        `;
       });
     };
 
-    function submitToECPay() {
-      // 💡 修正：對位 GAS-B 生成的表單 ID (ecpayAutoForm)
-      const form = document.getElementById('ecpayAutoForm');
-      if (form) {
-        form.submit();
-      } else {
-        alert('付款表單尚未準備就緒，請稍候再試。');
-      }
+    // 🚀 核心：點擊後 0 秒差，原地封裝直接發射去綠界！
+    function launchECPay() {
+      const phone = document.getElementById('guestPhone').value.replace(/\D/g, '');
+      const selectVal = document.getElementById('serviceSelect').value;
+      
+      if (phone.length < 9) { return Swal.fire('填寫錯誤', '請輸入完整的手機號碼以利後台對帳！', 'warning'); }
+      if (!selectVal) { return Swal.fire('尚未選擇', '請選擇您剛剛預約的服務項目與時間！', 'warning'); }
+      
+      const parts = selectVal.split('|');
+      const serviceName = parts[0];
+      const price = parts[1];
+      
+      const btn = document.getElementById('payBtn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 金流通道安全加密中...';
+      btn.disabled = true;
+      
+      // 💡 完美對帳關鍵：動態生成補付單號（帶著客人的手機），後台看到這個單號與手機，就能一秒幫他入帳！
+      const timestamp = new Date();
+      const formatTime = timestamp.getFullYear() +
+                         String(timestamp.getMonth()+1).padStart(2,'0') +
+                         String(timestamp.getDate()).padStart(2,'0') +
+                         String(timestamp.getHours()).padStart(2,'0') +
+                         String(timestamp.getMinutes()).padStart(2,'0') +
+                         String(timestamp.getSeconds()).padStart(2,'0');
+      
+      const orderId = "RE" + formatTime + phone.slice(-4);
+      const tradeDate = timestamp.getFullYear() + "/" + String(timestamp.getMonth()+1).padStart(2,'0') + "/" + String(timestamp.getDate()).padStart(2,'0') + " " + String(timestamp.getHours()).padStart(2,'0') + ":" + String(timestamp.getMinutes()).padStart(2,'0') + ":" + String(timestamp.getSeconds()).padStart(2,'0');
+
+      // 請求後台大腦安全計算簽章並拉起綠界
+      fetch(BACKEND_API, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({
+          action: "generateStandaloneForm",
+          orderId: orderId,
+          price: price,
+          service: serviceName,
+          phone: phone,
+          dateStr: tradeDate
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success && res.html) {
+          const slot = document.getElementById('ecpayFormSlot');
+          slot.innerHTML = res.html;
+          
+          // 0 秒差精準發射！
+          const form = slot.querySelector('form');
+          if (form) { form.submit(); } else { alert('金流表單對接失敗'); }
+        } else {
+          alert('簽章建立失敗：' + res.message);
+          btn.innerHTML = '<i class="fas fa-shield-alt text-accent"></i> 建立安全金流連線';
+          btn.disabled = false;
+        }
+      })
+      .catch(err => {
+        alert('安全通道伺服器過載，請稍後重試。');
+        btn.innerHTML = '<i class="fas fa-shield-alt text-accent"></i> 建立安全金流連線';
+        btn.disabled = false;
+      });
     }
   </script>
 </body>
