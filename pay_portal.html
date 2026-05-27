@@ -31,23 +31,23 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
   
   <div class="bg-surface p-6 rounded-[1.5rem] border border-secondary/20 shadow-lg text-left w-full box-border space-y-5">
     <p class="text-xs font-bold text-accent tracking-widest border-b border-secondary/10 pb-2 flex items-center">
-      <i class="fas fa-shield-alt mr-1.5"></i> 智慧型安全補付安全網
+      <i class="fas fa-shield-alt mr-1.5"></i> 智慧型安全補付對帳系統
     </p>
 
     <div class="space-y-1.5">
-      <label class="text-[11px] font-bold text-dark/70 tracking-wider">輸入預約時的手機號碼查詢訂單：</label>
+      <label class="text-[11px] font-bold text-dark/70 tracking-wider">輸入預約的手機號碼查詢「未付款」項目：</label>
       <div class="flex gap-2">
         <input type="tel" id="queryPhone" placeholder="例如：0912345678" class="flex-1 bg-primary/50 border border-secondary/30 rounded-xl px-3.5 py-2.5 text-xs font-medium text-dark placeholder-dark/30 focus:outline-none focus:border-accent transition-colors">
         <button type="button" onclick="searchOrderByPhone()" class="bg-dark hover:bg-accent text-white text-xs font-bold px-4 rounded-xl shadow-md transition-colors tracking-wider whitespace-nowrap">
-          查詢訂單
+          查詢帶入
         </button>
       </div>
     </div>
 
     <div id="orderStatusBox" class="bg-primary/30 rounded-xl p-4 border border-dashed border-secondary/30 hidden space-y-2">
       <div class="text-[11px] text-dark/60 font-bold flex justify-between">
-        <span>查詢到的單號：</span>
-        <span id="displayOrderId" class="text-dark font-mono">--</span>
+        <span>待付款單號：</span>
+        <span id="displayOrderId" class="text-dark font-mono font-bold">--</span>
       </div>
       <div class="h-px bg-secondary/10 w-full"></div>
       <div class="text-xs font-bold text-dark flex justify-between items-baseline">
@@ -60,7 +60,7 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
       <div id="paymentActionArea" class="hidden">
         <button type="button" onclick="executePay()" class="w-full bg-[#7E6B5A] hover:bg-[#C5A059] text-white font-bold py-4 px-6 rounded-xl shadow-xl shadow-dark/10 transition-all tracking-[0.2em] text-xs flex items-center justify-center gap-2 group transform active:scale-95 duration-200">
           <i class="fas fa-credit-card text-xs text-secondary group-hover:text-white transition-colors"></i>
-          重新連線前往支付
+          繼續完成付款
           <i class="fas fa-arrow-right text-xs opacity-70 group-hover:translate-x-1 transition-transform"></i>
         </button>
       </div>
@@ -72,7 +72,7 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
 
       <a href="https://script.google.com/macros/s/AKfycbwIGY8L774iM-U50uniLROYu_2I-T-osoV6xOYVk99CaQZt6kMRJmgnBhWhxvS35A5r/exec" class="w-full bg-[#FFFFFF] hover:bg-[#7E6B5A]/5 border border-[#7E6B5A]/40 text-[#7E6B5A] font-bold py-3 px-6 rounded-xl shadow-sm transition-all duration-300 tracking-[0.15em] text-[12px] flex items-center justify-center gap-2 transform active:scale-95">
         <i class="fas fa-undo-alt text-[11px] opacity-70"></i>
-        返回線上預約系統
+        返回線上預約入口
       </a>
     </div>
   </div>
@@ -86,7 +86,7 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
 </footer>
 
 <script>
-// 💡 指向妳的 GAS-B 正式版網址
+// 💡【核心破解定位點】請雅翎去妳的 GAS-B（總後台專案）點擊「發布」，把最新產生的那串 .exec 網址一字不漏地貼在下面這行引號內！
 const GAS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbwIGY8L774iM-U50uniLROYu_2I-T-osoV6xOYVk99CaQZt6kMRJmgnBhWhxvS35A5r/exec";
 let cachedFormHtml = "";
 
@@ -102,51 +102,70 @@ window.onload = function() {
 function searchOrderByPhone() {
   const phoneVal = document.getElementById('queryPhone').value.trim();
   if(!phoneVal) {
-    Swal.fire({ icon: 'warning', title: '請輸入手機號碼', text: '我們需要手機號碼才能幫妳對帳喔！', confirmButtonColor: '#7E6B5A' });
+    Swal.fire({ icon: 'warning', title: '請輸入手機號碼', text: '我們需要手機號碼才能幫妳查詢未付款訂單喔！', confirmButtonColor: '#7E6B5A' });
     return;
   }
   
   Swal.fire({ title: '正在安全通道中對帳...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
   
-  // 🚀【連線修復核心】補上 method: "POST"，徹底解除「安全通道連線失敗」的魔咒！
-  fetch(GAS_BACKEND_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: JSON.stringify({ action: "getPaymentForm", phone: phoneVal })
-  })
-  .then(res => res.json())
-  .then(res => {
+  // 🚀【強制破解跨網域封鎖】改用一對一隱密 JSON 封裝，完全繞過 Google 表單攔截，防堵「連線失敗」！
+  var requestData = { action: "getPaymentForm", phone: phoneVal };
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", GAS_BACKEND_URL, true);
+  xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8"); // 💡 破解安全限制的終極關鍵設定
+  
+  xhr.onload = function() {
     Swal.close();
-    if(res.success && res.html) {
-      cachedFormHtml = res.html;
-      
-      // 💡 智慧解析隱藏表單中的金額，同步秀在面板上給客人核對，增加信任感
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = res.html;
-      const amtInput = tempDiv.querySelector('input[name="TotalAmount"]');
-      const finalAmt = amtInput ? parseInt(amtInput.value).toLocaleString() : "--";
-      
-      document.getElementById('displayOrderId').innerText = res.orderId || "最新預約訂單";
-      document.getElementById('displayAmountText').innerText = "NT$ " + finalAmt;
-      document.getElementById('orderStatusBox').classList.remove('hidden');
-      document.getElementById('paymentActionArea').classList.remove('hidden');
-      
-      Swal.fire({ icon: 'success', title: '訂單對帳成功！', text: '已順利帶入最新未付款項目，請點擊下方按鈕前往結帳。', confirmButtonColor: '#7E6B5A' });
+    if (xhr.status >= 200 && xhr.status < 400) {
+      try {
+        var res = JSON.parse(xhr.responseText);
+        if(res.success && res.html) {
+          cachedFormHtml = res.html;
+          
+          // 自動拆解綠界金額顯示
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = res.html;
+          const amtInput = tempDiv.querySelector('input[name="TotalAmount"]');
+          const finalAmt = amtInput ? parseInt(amtInput.value).toLocaleString() : "--";
+          
+          document.getElementById('displayOrderId').innerText = res.orderId || "最新預約項目";
+          document.getElementById('displayAmountText').innerText = "NT$ " + finalAmt;
+          document.getElementById('orderStatusBox').classList.remove('hidden');
+          document.getElementById('paymentActionArea').classList.remove('hidden');
+          
+          Swal.fire({ icon: 'success', title: '查詢成功！帶入未付款訂單', text: '已順利找到您尚待付款的預約，請點擊「繼續完成付款」前往結帳。', confirmButtonColor: '#7E6B5A' });
+        } else {
+          hideStatusBox();
+          Swal.fire({ icon: 'info', title: '目前查無未付款項目', text: res.message || '該手機號碼目前沒有尚待付款的預約訂單喔！', confirmButtonColor: '#7E6B5A' });
+        }
+      } catch(e) {
+        hideStatusBox();
+        Swal.fire({ icon: 'error', title: '資料解析錯誤', text: '後台回傳資料有誤，請確保後台已更新部署。', confirmButtonColor: '#7E6B5A' });
+      }
     } else {
-      document.getElementById('orderStatusBox').classList.add('hidden');
-      document.getElementById('paymentActionArea').classList.add('hidden');
-      Swal.fire({ icon: 'info', title: '查無未付款訂單', text: res.message || '該手機號碼目前沒有尚待付款的訂單喔！', confirmButtonColor: '#7E6B5A' });
+      hideStatusBox();
+      Swal.fire({ icon: 'error', title: '安全通道通訊未響應', text: '代碼 500：請確保後台網址正確無誤。', confirmButtonColor: '#7E6B5A' });
     }
-  })
-  .catch(err => {
+  };
+  
+  xhr.onerror = function() {
     Swal.close();
-    Swal.fire({ icon: 'error', title: '安全通道連線失敗', text: '後台通訊未響應，請確保後台已更新並發布最新版本。', confirmButtonColor: '#7E6B5A' });
-  });
+    hideStatusBox();
+    Swal.fire({ icon: 'error', title: '安全通道連線失敗', text: '請檢查網路連線，或確保後台大腦已發布最新正式版本。', confirmButtonColor: '#7E6B5A' });
+  };
+  
+  xhr.send(JSON.stringify(requestData));
+}
+
+function hideStatusBox() {
+  document.getElementById('orderStatusBox').classList.add('hidden');
+  document.getElementById('paymentActionArea').classList.add('hidden');
 }
 
 function executePay() {
   if(!cachedFormHtml) return;
-  Swal.fire({ title: '正在開啟綠界安全金流...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+  Swal.fire({ title: '正在安全導向至綠界金流...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
   
   const container = document.getElementById('ecpayFormContainer');
   container.innerHTML = cachedFormHtml;
@@ -157,7 +176,7 @@ function executePay() {
       form.submit();
     } else {
       Swal.close();
-      Swal.fire({ icon: 'error', title: '金流加載失敗', text: '無法自動提交表單，請重新查詢。', confirmButtonColor: '#7E6B5A' });
+      Swal.fire({ icon: 'error', title: '金流表單拉起失敗', text: '無法自動提交安全表單，請重新查詢。', confirmButtonColor: '#7E6B5A' });
     }
   }, 300);
 }
