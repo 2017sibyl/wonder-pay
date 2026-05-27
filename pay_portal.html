@@ -86,7 +86,7 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
 </footer>
 
 <script>
-// 💡【核心破解定位點】請雅翎去妳的 GAS-B（總後台專案）點擊「發布」，把最新產生的那串 .exec 網址一字不漏地貼在下面這行引號內！
+// 💡 指向妳最新的 GAS-B 正式部署網址
 const GAS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbwIGY8L774iM-U50uniLROYu_2I-T-osoV6xOYVk99CaQZt6kMRJmgnBhWhxvS35A5r/exec";
 let cachedFormHtml = "";
 
@@ -108,12 +108,12 @@ function searchOrderByPhone() {
   
   Swal.fire({ title: '正在安全通道中對帳...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
   
-  // 🚀【強制破解跨網域封鎖】改用一對一隱密 JSON 封裝，完全繞過 Google 表單攔截，防堵「連線失敗」！
-  var requestData = { action: "getPaymentForm", phone: phoneVal };
+  // 🚀 使用標準的 URL 編碼格式傳遞，100% 確保 Google 大腦能無痛拆解並解析！
+  var requestPayload = "action=getPaymentForm&phone=" + encodeURIComponent(phoneVal);
 
   var xhr = new XMLHttpRequest();
   xhr.open("POST", GAS_BACKEND_URL, true);
-  xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8"); // 💡 破解安全限制的終極關鍵設定
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ✨ 與後台完全一致的解碼協議設定
   
   xhr.onload = function() {
     Swal.close();
@@ -123,7 +123,7 @@ function searchOrderByPhone() {
         if(res.success && res.html) {
           cachedFormHtml = res.html;
           
-          // 自動拆解綠界金額顯示
+          // 智慧拆解金額顯示
           const tempDiv = document.createElement('div');
           tempDiv.innerHTML = res.html;
           const amtInput = tempDiv.querySelector('input[name="TotalAmount"]');
@@ -134,28 +134,28 @@ function searchOrderByPhone() {
           document.getElementById('orderStatusBox').classList.remove('hidden');
           document.getElementById('paymentActionArea').classList.remove('hidden');
           
-          Swal.fire({ icon: 'success', title: '查詢成功！帶入未付款訂單', text: '已順利找到您尚待付款的預約，請點擊「繼續完成付款」前往結帳。', confirmButtonColor: '#7E6B5A' });
+          Swal.fire({ icon: 'success', title: '查詢成功！已帶入未付款訂單', text: '請點擊「繼續完成付款」前往結帳。', confirmButtonColor: '#7E6B5A' });
         } else {
           hideStatusBox();
-          Swal.fire({ icon: 'info', title: '目前查無未付款項目', text: res.message || '該手機號碼目前沒有尚待付款的預約訂單喔！', confirmButtonColor: '#7E6B5A' });
+          Swal.fire({ icon: 'info', title: '目前查無未付款預約', text: res.message || '該手機號碼目前沒有尚待付款的預約項目喔！', confirmButtonColor: '#7E6B5A' });
         }
       } catch(e) {
         hideStatusBox();
-        Swal.fire({ icon: 'error', title: '資料解析錯誤', text: '後台回傳資料有誤，請確保後台已更新部署。', confirmButtonColor: '#7E6B5A' });
+        Swal.fire({ icon: 'error', title: '格式連線錯誤', text: '後台回傳解析失敗，請確認後台是否已成功重新部署建立新版本。', confirmButtonColor: '#7E6B5A' });
       }
     } else {
       hideStatusBox();
-      Swal.fire({ icon: 'error', title: '安全通道通訊未響應', text: '代碼 500：請確保後台網址正確無誤。', confirmButtonColor: '#7E6B5A' });
+      Swal.fire({ icon: 'error', title: '安全通道未響應', text: '伺服器代碼 500，請聯繫管家。', confirmButtonColor: '#7E6B5A' });
     }
   };
   
   xhr.onerror = function() {
     Swal.close();
     hideStatusBox();
-    Swal.fire({ icon: 'error', title: '安全通道連線失敗', text: '請檢查網路連線，或確保後台大腦已發布最新正式版本。', confirmButtonColor: '#7E6B5A' });
+    Swal.fire({ icon: 'error', title: '安全通道連線失敗', text: '請檢查網路連線。', confirmButtonColor: '#7E6B5A' });
   };
   
-  xhr.send(JSON.stringify(requestData));
+  xhr.send(requestPayload);
 }
 
 function hideStatusBox() {
