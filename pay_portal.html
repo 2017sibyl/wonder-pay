@@ -86,7 +86,6 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
 </footer>
 
 <script>
-// 💡 指向妳最新的 GAS-B 正式部署網址
 const GAS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbwIGY8L774iM-U50uniLROYu_2I-T-osoV6xOYVk99CaQZt6kMRJmgnBhWhxvS35A5r/exec";
 let cachedFormHtml = "";
 
@@ -108,12 +107,11 @@ function searchOrderByPhone() {
   
   Swal.fire({ title: '正在安全通道中對帳...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
   
-  // 🚀 使用標準的 URL 編碼格式傳遞，100% 確保 Google 大腦能無痛拆解並解析！
   var requestPayload = "action=getPaymentForm&phone=" + encodeURIComponent(phoneVal);
 
   var xhr = new XMLHttpRequest();
   xhr.open("POST", GAS_BACKEND_URL, true);
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // ✨ 與後台完全一致的解碼協議設定
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   
   xhr.onload = function() {
     Swal.close();
@@ -121,11 +119,26 @@ function searchOrderByPhone() {
       try {
         var res = JSON.parse(xhr.responseText);
         if(res.success && res.html) {
-          cachedFormHtml = res.html;
+          
+          // 🚀【核心抗噪防摔解碼】
+          // 自動辨識後台傳過來的是否為 Base64 壓縮編碼，如果是，秒速解碼還原 HTML！
+          let rawHtml = res.html.trim();
+          if (rawHtml.indexOf('<form') === -1) {
+            try {
+              // 進行 Base64 解碼 (處理中文字元安全解碼)
+              rawHtml = decodeURIComponent(atob(rawHtml).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+              }).join(''));
+            } catch(b64err) {
+              rawHtml = res.html; // 降級容錯
+            }
+          }
+          
+          cachedFormHtml = rawHtml;
           
           // 智慧拆解金額顯示
           const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = res.html;
+          tempDiv.innerHTML = rawHtml;
           const amtInput = tempDiv.querySelector('input[name="TotalAmount"]');
           const finalAmt = amtInput ? parseInt(amtInput.value).toLocaleString() : "--";
           
