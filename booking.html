@@ -222,7 +222,7 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
 <label class="block text-[10px] font-bold text-dark/60 mb-1.5 pl-1"> 折扣碼 DISCOUNT CODE </label>
 <div class="flex gap-2">
 <input type="text" id="couponCode" placeholder="如有代碼請輸入" class="w-full bg-inputbg border border-secondary/30 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-accent uppercase tracking-wider box-border" oninput="this.value = this.value.toUpperCase()">
-<button type="button" id="applyCouponBtn" onclick="applyCoupon()" class="bg-dark text-white px-5 py-3 rounded-xl font-bold tracking-widest text-[12px] hover:bg-accent transition-colors flex-shrink-0 shadow-sm"> 套用 </button>
+<button type="button" id="applyCouponBtn" onclick="applyCoupon()" class="bg-dark text-white px-5 py-3 rounded-xl font-bold tracking-widest text-[12px] hover:bg-accent transition-colors shadow-sm"> 套用 </button>
 </div>
 <div id="couponMessage" class="text-[11px] mt-2 hidden font-bold tracking-wide"></div>
 </div>
@@ -233,9 +233,9 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
 <h2 class="text-xs font-bold tracking-widest border-b border-secondary/10 pb-3 flex items-center text-dark">
 <i class="fas fa-info-circle text-accent mr-2"></i> 付款須知 PAYMENT NOTICE
 </h2>
-<ul class="text-[11px] text-dark/70 space-y-2.5 tracking-wider font-medium list-disc pl-4 marker:text-accent/60">
-<li> 預約送出後，請於 <span class="text-red-700 font-bold"> 30 分鐘內 </span> 完成付款，逾時系統將自動取消訂單。 </li>
-<li> 接受 信用卡 / Apple Pay / 街口支付 / 網路 ATM。 </li>
+<ul class="text-[12px] text-dark/70 space-y-2.5 tracking-wider font-medium list-disc pl-4 marker:text-accent/60">
+<li> 預約送出後，請儘速完成結帳以確保您的專屬預約時段。 </li>
+<li> 接受 信用卡 / Apple Pay / 街口支付 / 超商代碼 / 網路 ATM。 </li>
 </ul>
 <div class="pt-3">
 <label class="flex items-start gap-3 cursor-pointer bg-red-50/50 p-4 rounded-xl border border-red-100/50 hover:bg-red-50 transition-colors">
@@ -300,22 +300,25 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
 </div>
 
 <div class="mt-4 pt-3 border-t border-dashed border-secondary/20 text-center">
-  <button type="button" onclick="const p = document.getElementById('userPhoneInput') ? document.getElementById('userPhoneInput').value : ''; window.open('https://2017sibyl.github.io/wonderspa/pay_portal.html?phone=' + encodeURIComponent(p), '_blank')" class="inline-flex items-center gap-1.5 justify-center w-full py-2.5 bg-inputbg hover:bg-secondary/10 border border-accent/30 rounded-xl text-dark hover:text-accent text-[11px] font-bold tracking-widest transition-all duration-300 shadow-sm">
+  <button type="button" onclick="const p = document.getElementById('userPhoneInput') ? document.getElementById('userPhoneInput').value : ''; window.open('https://2017sibyl.github.io/wonder-pay/pay_portal.html?phone=' + encodeURIComponent(p), '_blank')" class="inline-flex items-center gap-1.5 justify-center w-full py-2.5 bg-inputbg hover:bg-secondary/10 border border-accent/30 rounded-xl text-dark hover:text-accent text-[11px] font-bold tracking-widest transition-all duration-300 shadow-sm">
     <i class="fas fa-shield-alt text-accent text-[10px]"></i> 預約卡住轉圈圈？點我進入「獨立安全補付通道」
   </button>
 </div>
 
-<div class="mt-4 p-3 bg-red-50/80 border border-red-100/60 rounded-xl text-left w-full box-border">
-  <p class="text-[12px] text-red-800 font-bold leading-relaxed tracking-wide flex items-center gap-1">
-    <i class="fas fa-exclamation-circle text-[10px] opacity-90"></i> 
-    如點擊『前往支付』遇轉圈圈，亦可至上方輸入電話『查詢帶入』➔『繼續完成付款』
-  </p>
+  <div class="mt-4 p-3 bg-red-50/80 border border-red-100/60 rounded-xl text-left w-full box-border">
+    <p class="text-[12.5px] text-red-800 font-bold leading-relaxed tracking-wide flex items-center gap-1">
+      <i class="fas fa-exclamation-circle text-[10px] opacity-90"></i> 
+      如點擊『前往支付』遇轉圈圈，亦可至上方輸入電話『查詢帶入』➔『繼續完成付款』
+    </p>
+  </div>
+
 </div>
 
 </div>
 </div>
 </form>
 
+<!-- 👑 完美套版：米棕色細小字體頁尾與數位管家專屬連結 -->
 <footer class="mt-12 mb-8 text-center w-full box-border px-4">
   <p class="text-[10px] tracking-[0.1em] font-bold" style="color: #bca085;">
     Designed by 
@@ -327,7 +330,7 @@ tailwind.config = { theme: { extend: { colors: { primary: '#F5F1ED', secondary: 
 </main>
 
 <script>
-// 🚀【跨網域穿透引水血管】請精準對齊妳開闢的完全獨立大腦 API 的正式網址！
+// 🚀【跨網域穿透血管設定】精準對接妳開闢的完全獨立大腦 API 的部署網址！
 const GAS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbz1dbcGlSIxtgC7d0mO5OrM2qoerkM0bA8nrp2TYfgYh4h3mWx8FXxE-le3Dh16XncAgQ/exec";
 
 let globalServices = []; let globalSlots = []; let globalBookings = []; let staffMap = {}; let globalWalletPlans = [];
@@ -337,7 +340,7 @@ let currentOriginalPrice = 0; let currentCouponDiscount = 0;
 
 window.addEventListener('DOMContentLoaded', () => { renderCalendar(); loadInitialData(); });
 
-// 1. 跨網域拉取 106 核心初始排班、規格、方案與佈告公告
+// 🔄 修正 1：跨網域天線讀取初始快取排班、規格、方案與公告
 function loadInitialData() {
   fetch(GAS_BACKEND_URL + "?action=getInitialFrontData")
     .then(res => res.json())
@@ -369,7 +372,7 @@ function openTopUpModal() {
 }
 function closeTopUpModal() { document.getElementById('topUpModal').classList.add('hidden'); }
 
-// 2. 儲值申請跨網域回報 (Fetch POST)
+// 🔄 修正 2：跨網域天線送出儲值匯款審核回報
 function submitTopUp() {
   const phone = document.getElementById('tuPhone').value.trim();
   const acc = document.getElementById('tuAccount').value.trim();
@@ -392,7 +395,6 @@ function submitTopUp() {
   }).catch(err => { btn.disabled = false; btn.innerHTML = '送出審核'; });
 }
 
-// 3. 106 一頁式選師傅 / 看空檔收折模式切換
 function switchMode(mode) {
   bookingMode = mode; document.getElementById('hiddenMaster').value = ''; document.getElementById('hiddenDate').value = ''; document.getElementById('hiddenTime').value = '';
   currentOriginalPrice = 0; currentCouponDiscount = 0; calculateFinalPrice(); resetCouponUI();
@@ -401,24 +403,26 @@ function switchMode(mode) {
   if(selectedDateCell) selectedDateCell.classList.remove('bg-accent', 'text-white');
 
   if (mode === 'master') {
-    document.getElementById('modeBtnMaster').className = "flex-1 py-2 text-[11px] font-bold rounded-lg bg-surface shadow-sm text-dark transition-all";
-    document.getElementById('modeBtnTime').className = "flex-1 py-2 text-[11px] font-bold rounded-lg text-dark/50 transition-all";
+    document.getElementById('modeBtnMaster').classList.replace('text-dark/50', 'text-dark'); document.getElementById('modeBtnMaster').classList.add('bg-surface', 'shadow-sm');
+    document.getElementById('modeBtnTime').classList.replace('text-dark', 'text-dark/50'); document.getElementById('modeBtnTime').classList.remove('bg-surface', 'shadow-sm');
     document.getElementById('stepMaster').classList.remove('hidden');
-    document.getElementById('serviceLabel').innerText = "2. 選擇服務 SERVICE"; document.getElementById('dateLabel').innerText = "3. 選擇日期 DATE"; document.getElementById('timeLabel').innerText = "4. 選擇時段 TIME";
+    document.getElementById('serviceLabel').innerText = "2. 選擇服務 SERVICE"; document.getElementById('dateLabel').innerText = "3. 選擇日期 DATE";
+    document.getElementById('timeLabel').innerText = "4. 選擇時段 TIME";
     const sSelect = document.getElementById('serviceSelect'); sSelect.innerHTML = '<option value="" disabled selected>請先完成上方選項</option>'; sSelect.disabled = true;
     document.getElementById('masterSelect').value = "";
   } else {
-    document.getElementById('modeBtnTime').className = "flex-1 py-2 text-[11px] font-bold rounded-lg bg-surface shadow-sm text-dark transition-all";
-    document.getElementById('modeBtnMaster').className = "flex-1 py-2 text-[11px] font-bold rounded-lg text-dark/50 transition-all";
+    document.getElementById('modeBtnTime').classList.replace('text-dark/50', 'text-dark'); document.getElementById('modeBtnTime').classList.add('bg-surface', 'shadow-sm');
+    document.getElementById('modeBtnMaster').classList.replace('text-dark', 'text-dark/50'); document.getElementById('modeBtnMaster').classList.remove('bg-surface', 'shadow-sm');
     document.getElementById('stepMaster').classList.add('hidden');
-    document.getElementById('serviceLabel').innerText = "1. 選擇服務 SERVICE"; document.getElementById('dateLabel').innerText = "2. 選擇日期 DATE"; document.getElementById('timeLabel').innerText = "3. 選擇時段 TIME";
+    document.getElementById('serviceLabel').innerText = "1. 選擇服務 SERVICE"; document.getElementById('dateLabel').innerText = "2. 選擇日期 DATE";
+    document.getElementById('timeLabel').innerText = "3. 選擇時段 TIME";
     const sSelect = document.getElementById('serviceSelect'); sSelect.disabled = false; sSelect.innerHTML = '<option value="" disabled selected>請選擇服務項目</option>';
     let uniqueServices = Array.from(new Set(globalServices.map(s => s.name)));
     uniqueServices.forEach(name => { let item = globalServices.find(s => s.name === name); sSelect.appendChild(new Option(`${item.name} - NT$ ${item.price}`, item.name)); });
   }
 }
 
-// 4. 舊客個資與儲值餘額卡片查詢帶入 (做法 B：不彈跳、不打斷預約流程)
+// 🔄 修正 3：跨網域天線查詢舊客資料與會員錢包卡片餘額
 function fetchCustomerProfile() {
   const phoneInput = document.getElementById('userPhoneInput'); if(!phoneInput) return;
   const phone = phoneInput.value.replace(/\D/g, ''); if(phone.length < 8) { Swal.fire('請輸入完整電話','','warning'); return; }
@@ -495,18 +499,18 @@ function calculateFinalPrice() {
 
   document.getElementById('priceDisplay').innerText = "NT$ " + finalPrice.toLocaleString();
   const submitBtn = document.getElementById('submitBtn');
-  if (finalPrice === 0 && currentOriginalPrice > 0) { submitBtn.innerHTML = '全額抵扣・確認預約 <i class="fas fa-check-circle ml-2"></i>'; submitBtn.className = "bg-[#2e7d32] hover:bg-[#1b5e20] text-white font-bold py-3.5 px-7 rounded-xl shadow-xl transition-all tracking-[0.2em] text-xs flex items-center group"; }
-  else { submitBtn.className = "bg-dark hover:bg-accent text-white font-bold py-3.5 px-7 rounded-xl shadow-xl shadow-dark/20 transition-all tracking-[0.2em] text-xs flex items-center group"; submitBtn.innerHTML = '前往支付 <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>'; }
+  if (finalPrice === 0 && currentOriginalPrice > 0) { submitBtn.innerHTML = '全額抵扣・確認預約 <i class="fas fa-check-circle ml-2"></i>'; submitBtn.classList.replace('bg-dark', 'bg-[#2e7d32]'); }
+  else { submitBtn.innerHTML = '前往支付 <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>'; submitBtn.classList.replace('bg-[#2e7d32]', 'bg-dark'); }
 
   if (currentCouponDiscount > 0 || deductAmount > 0) {
-    document.getElementById('discountDetail').className = "flex flex-col ml-1";
+    document.getElementById('discountDetail').classList.remove('hidden'); document.getElementById('discountDetail').classList.add('flex');
     document.getElementById('originalPriceText').innerText = "原價 $" + currentOriginalPrice.toLocaleString();
     let discountStr = []; if(currentCouponDiscount > 0) discountStr.push(`券折 $${currentCouponDiscount.toLocaleString()}`); if(deductAmount > 0) discountStr.push(`儲值抵 $${deductAmount.toLocaleString()}`);
     document.getElementById('discountText').innerText = discountStr.join(' | ');
-  } else { document.getElementById('discountDetail').className = "hidden flex-col ml-1"; }
+  } else { document.getElementById('discountDetail').classList.add('hidden'); document.getElementById('discountDetail').classList.remove('flex'); }
 }
 
-// 5. 折扣碼與特定課程限制跨網域核銷 (Fetch GET)
+// 🔄 修正 4 : 跨網域天線折扣碼校驗與課程專屬路由限制
 function applyCoupon() {
   const code = document.getElementById('couponCode').value.trim();
   const msgDiv = document.getElementById('couponMessage');
@@ -532,7 +536,6 @@ function applyCoupon() {
     }).catch(err => { applyBtn.disabled = false; applyBtn.innerText = "套用"; });
 }
 
-// 6. 106 原創日曆排班、空檔房間鎖比對核心算法 (平移至前端完全體)
 function hasAvailableTime(dateStr, serviceName) {
   const requiredDuration = getServiceTotalMinutes(serviceName);
   const dayBookings = globalBookings.filter(b => b.date === dateStr);
@@ -636,16 +639,14 @@ function selectDate(element, dateStr) {
   else { document.getElementById('timeSlotsGrid').innerHTML = ''; document.getElementById('noTimeText').classList.remove('hidden'); }
 }
 
-function Math_round(val) { return Math.round(val); }
-
 function renderAvailableSlots(slots) {
   const container = document.getElementById('timeSlotsGrid'); container.innerHTML = '';
   slots.sort().forEach(time => {
     const btn = document.createElement('button'); btn.type = 'button';
     btn.className = "time-btn bg-inputbg border border-secondary/30 rounded-xl py-2 text-sm text-dark transition-all font-bold"; btn.innerText = time;
     btn.onclick = function() {
-      if (selectedTimeBtn) { selectedTimeBtn.className = "time-btn bg-inputbg border border-secondary/30 rounded-xl py-2 text-sm text-dark transition-all font-bold"; }
-      this.className = "time-btn bg-accent text-white border border-accent rounded-xl py-2 text-sm transition-all font-bold";
+      if (selectedTimeBtn) { selectedTimeBtn.classList.remove('bg-accent', 'text-white', 'border-accent'); selectedTimeBtn.classList.add('bg-inputbg', 'text-dark', 'border-secondary/30'); }
+      this.classList.remove('bg-inputbg', 'text-dark', 'border-secondary/30'); this.classList.add('bg-accent', 'text-white', 'border-accent');
       selectedTimeBtn = this; document.getElementById('hiddenTime').value = this.textContent;
       if (bookingMode === 'time') renderAvailableMasters(this.textContent);
     };
@@ -661,23 +662,23 @@ function renderAvailableMasters(time) {
     const btn = document.createElement('button'); btn.type = 'button'; let displayName = staffMap[m] || m;
     btn.className = "master-btn bg-inputbg border border-secondary/30 rounded-xl py-2 text-sm text-dark transition-all font-bold"; btn.innerText = displayName;
     btn.onclick = function() {
-      if (selectedMasterBtn) { selectedMasterBtn.className = "master-btn bg-inputbg border border-secondary/30 rounded-xl py-2 text-sm text-dark transition-all font-bold"; }
-      this.className = "master-btn bg-accent text-white border border-accent rounded-xl py-2 text-sm transition-all font-bold";
+      if (selectedMasterBtn) { selectedMasterBtn.classList.remove('bg-accent', 'text-white', 'border-accent'); selectedMasterBtn.classList.add('bg-inputbg', 'text-dark', 'border-secondary/30'); }
+      this.classList.remove('bg-inputbg', 'text-dark', 'border-secondary/30'); this.classList.add('bg-accent', 'text-white', 'border-accent');
       selectedMasterBtn = this; document.getElementById('hiddenMaster').value = m;
     };
     container.appendChild(btn);
   });
 }
 
-// 7. 送單鎖位與 106 狀態機防重複送單鎖 (CORS Fetch POST)
+// 🔄 修正 5：下單鎖位攔截器與綠界金流表單自動跳轉處理 (解決轉圈圈重合死機)
 function submitForm() {
   const btn = document.getElementById('submitBtn');
-  if (btn.classList.contains('is-processing')) return; 
+  if (btn.classList.contains('is-processing')) { return; }
 
   try {
     const isFemale = document.getElementById('genderConfirm').checked;
     if(!isFemale) { Swal.fire({ title: '溫馨提醒', text: '為維護館內隱私，本店僅接待女性顧客。請勾選確認聲明後再進行支付！', icon: 'warning', confirmButtonColor: '#C5A059' }); return; }
-
+  
     const useWallet = document.getElementById('useWalletBtn') ? document.getElementById('useWalletBtn').checked : false;
     const formData = {
       userPhone: document.querySelector('input[name="userPhone"]').value, userName: document.querySelector('input[name="userName"]').value,
@@ -686,7 +687,7 @@ function submitForm() {
       mainService: document.getElementById('serviceSelect').value, originalPrice: currentOriginalPrice, couponCode: document.getElementById('couponCode').value.trim(),
       useWallet: useWallet
     };
-
+  
     if(!formData.userPhone || !formData.userName || !formData.lineName || !formData.master || !formData.bookDate || !formData.bookTime || !formData.mainService) {
       Swal.fire('請先填寫資料', '請確認已完整選擇師傅、時段與必填欄位！', 'warning'); return;
     }
@@ -695,7 +696,7 @@ function submitForm() {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 訂單建立與金流連線中...';
     btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed');
 
-    // 跨網域發射至 API 新大腦
+    // 跨網域發射 Fetch POST 至獨立 API 大腦
     fetch(GAS_BACKEND_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -705,21 +706,33 @@ function submitForm() {
         if (response.walletFullyPaid) {
           window.location.href = response.scriptUrl + "?page=success";
         } else {
-          const div = document.createElement('div'); div.style.display = 'none'; 
+          const div = document.createElement('div'); 
+          div.style.display = 'none'; 
           div.innerHTML = response.html; document.body.appendChild(div);
           const ecpayForm = document.getElementById('ecpayForm');
-          if(ecpayForm) { ecpayForm.submit(); }
-          else { alert('找不到金流表單，但訂單可能已建立，請聯繫客服。'); btn.innerHTML = '前往支付'; btn.disabled = false; btn.classList.remove('is-processing', 'opacity-50', 'cursor-not-allowed'); }
+          if(ecpayForm) {
+             ecpayForm.submit();
+          } else {
+             alert('找不到金流表單，但訂單可能已建立，請聯繫客服。');
+             btn.innerHTML = '前往支付'; btn.disabled = false; btn.classList.remove('is-processing', 'opacity-50', 'cursor-not-allowed');
+          }
         }
-      } else { alert('處理訂單失敗：' + response.message); btn.innerHTML = '前往支付'; btn.disabled = false; btn.classList.remove('is-processing', 'opacity-50', 'cursor-not-allowed'); }
+      } else {
+        alert('處理訂單失敗：' + response.message);
+        btn.innerHTML = '前往支付'; btn.disabled = false; btn.classList.remove('is-processing', 'opacity-50', 'cursor-not-allowed');
+      }
     }).catch(err => {
-      btn.innerHTML = '前往支付'; btn.disabled = false; btn.classList.remove('is-processing', 'opacity-50', 'cursor-not-allowed');
-      alert('雲端伺服器連線過載，請重試。');
+        alert('伺服器連線過載，請稍後重試');
+        btn.innerHTML = '前往支付'; btn.disabled = false; btn.classList.remove('is-processing', 'opacity-50', 'cursor-not-allowed');
     });
-  } catch (e) { alert('發生預期外錯誤：' + e.message); btn.innerHTML = '前往支付'; btn.disabled = false; btn.classList.remove('is-processing', 'opacity-50', 'cursor-not-allowed'); }
+  
+  } catch (e) {
+    alert('發生預期外錯誤：' + e.message);
+    btn.innerHTML = '前往支付'; btn.disabled = false; btn.classList.remove('is-processing', 'opacity-50', 'cursor-not-allowed');
+  }
 }
 
-// 8. 補付通道與重啟訂單付款功能 (Fetch GET)
+// 🔄 修正 6：補付通道重啟舊預約單綠界表單
 window.repayOrder = function(event, orderId) {
   event.preventDefault(); const btn = event.currentTarget; const originalText = btn.innerHTML;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 連結金流中...'; btn.disabled = true; btn.classList.add('opacity-70');
